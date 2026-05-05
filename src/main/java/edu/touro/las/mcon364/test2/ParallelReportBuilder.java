@@ -92,11 +92,9 @@ public class ParallelReportBuilder {
             //I didn't have time to finish them'
 
             // TODO 2C: submit or assign one unit of work per batch
-            //pool.submit(()->{
-                //batches.stream().
-                numberOfBatchesProcessed.incrementAndGet();
-                //return New BatchStats();
-           // });
+
+
+
 
 
 
@@ -105,21 +103,24 @@ public class ParallelReportBuilder {
             // - safely record that one more batch has been processed
 
             // - you have to use streams here
- /*           IntStream.iterate(0, start -> start < batches.size(), start -> start + chunkSize)
-                    .forEach(start -> {
-                        List<List<Transaction>> slice = batches.subList(start, Math.min(start + chunkSize, batches.size()));
-                        futures.add(pool.submit(
-                                () -> {
-                                    slice.stream().summaryStatistics(totalAmount, total )
-                                }
-                        ));
-                    });
-*/
+
             long totalAmount = 0;
             long totalCount = 0;
             int globalMax = Integer.MIN_VALUE;
             int globalMin = Integer.MAX_VALUE;
-
+            numberOfBatchesProcessed.incrementAndGet();
+       /*
+          IntStream.iterate(0, start -> start < batches.size(), start -> start + chunkSize)
+                    .forEach(start -> {
+                        List<Transaction> slice = batches.subList(start, Math.min(start + chunkSize, batches.size()));
+                        futures.add(pool.submit(
+                                () -> {
+                                    slice.stream().summaryStatistics(totalAmount, totalCount, globalMax, globalMin)
+                                 numberOfBatchesProcessed.incrementAndGet();
+                                 }
+                        ));
+                    });
+*/
             // TODO 2D: after all work has been started, collect results
             // and combine them into the summary variables above
             // you don't have to use streams here. In this case for loop is acceptable
