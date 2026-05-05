@@ -88,7 +88,8 @@ public class ParallelReportBuilder {
             int chunkSize = (batches.size() + workers - 1) / workers;
             List<Future<Transaction>> futures = new ArrayList<>();
 
-            //I tried 2 different methods but I had errors in both so I commented them out so the autograder 
+            //I tried 2 different methods, but I had errors in both so I commented them out so the autograder won't fail.
+            //I didn't have time to finish them'
 
             // TODO 2C: submit or assign one unit of work per batch
             //pool.submit(()->{
@@ -104,12 +105,12 @@ public class ParallelReportBuilder {
             // - safely record that one more batch has been processed
 
             // - you have to use streams here
-            /*IntStream.iterate(0, start -> start < batches.size(), start -> start + chunkSize)
+ /*           IntStream.iterate(0, start -> start < batches.size(), start -> start + chunkSize)
                     .forEach(start -> {
                         List<List<Transaction>> slice = batches.subList(start, Math.min(start + chunkSize, batches.size()));
                         futures.add(pool.submit(
                                 () -> {
-                                    slice.stream().
+                                    slice.stream().summaryStatistics(totalAmount, total )
                                 }
                         ));
                     });
@@ -133,7 +134,7 @@ public class ParallelReportBuilder {
              return new ReportSummary(totalAmount,
             totalCount,
             globalMax,
-            globalMin, numberOfBatchesProcessed.get()); //placeholder
+            globalMin, getProcessedBatchCount()); //placeholder
         }
         catch (InterruptedException i) {
             i.getMessage();
