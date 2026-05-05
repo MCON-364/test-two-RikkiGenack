@@ -3,6 +3,8 @@ package edu.touro.las.mcon364.test2;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * ══════════════════════════════════════════════════════════════
@@ -57,8 +59,9 @@ public class InventoryManager {
 
     // TODO: declare and initialise a private final field called totalUnitsAdded that tracks the
     //       running total of units ever added, thread-safely, without using synchronized
-    private final int totalUnitsAdded = 0;
 
+    private final Lock lock = new ReentrantLock();
+    private int totalUnitsAdded = 0;
     /**
      * Adds {@code qty} units of {@code item} to inventory.
      *
@@ -76,7 +79,13 @@ public class InventoryManager {
         //             that can do this in one atomic step
         stock.merge(item, qty, Integer::sum);
         // TODO: atomically add qty to totalUnitsAdded
-        totalUnitsAdded = totalUnitsAdded + qty;
+        lock.lock();
+        try{
+            totalUnitsAdded += qty;
+        }
+        finally {
+            lock.unlock();
+        }
     }
 
     /**
@@ -108,14 +117,14 @@ public class InventoryManager {
         //       Hint: your chosen Map has a compute() method that lets you
         //             read and write in one atomic step.
 
-        return false; //placeholder
+         //placeholder
     }
-
+//below here is done
     /**
      * Returns the current stock for {@code item}, or 0 if unknown.
      */
     public int getStock(String item) {
-       return stock.get(item); //placeholder
+       return stock.containsKey(item) ? stock.get(item) : 0; //placeholder
     }
 
     /**
