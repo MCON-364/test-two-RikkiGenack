@@ -68,11 +68,7 @@ public class InventoryManager {
      */
     public void addStock(String item, int qty) throws IllegalArgumentException{
         // TODO: validate qty > 0
-            if(qty>0){
-
-
-            }
-            else{
+            if(qty<0){
                 throw new IllegalArgumentException();
             }
         // TODO: atomically add qty to the item's current stock
@@ -80,7 +76,7 @@ public class InventoryManager {
         //             that can do this in one atomic step
         stock.merge(item, qty, Integer::sum);
         // TODO: atomically add qty to totalUnitsAdded
-        totalUnitsAdded.
+        totalUnitsAdded = totalUnitsAdded + qty;
     }
 
     /**
@@ -93,7 +89,14 @@ public class InventoryManager {
      */
     public boolean removeStock(String item, int qty) {
         // TODO: validate qty > 0
-
+        if (qty>0){
+            int currStock= stock.get(item);
+            if(currStock>=qty){
+                stock.merge(item, -qty, Integer::sum);
+                return true;
+            }
+            return false;
+        }
 
         // TODO: atomically check-and-decrement.
         //       If current stock >= qty, subtract qty.
@@ -109,14 +112,14 @@ public class InventoryManager {
      * Returns the current stock for {@code item}, or 0 if unknown.
      */
     public int getStock(String item) {
-       return 0; //placeholder
+       return stock.get(item); //placeholder
     }
 
     /**
      * Returns the cumulative number of units ever added (all items combined).
      */
     public int getTotalUnitsAdded() {
-        return 0; //placeholder
+        return totalUnitsAdded; //placeholder
     }
 
     /**
@@ -125,7 +128,7 @@ public class InventoryManager {
      */
     public Map<String, Integer> getSnapshot() {
         // TODO: return a defensive copy
-        return null; //placeholder
+        return Map.copyOf(stock); //placeholder
     }
 }
 
