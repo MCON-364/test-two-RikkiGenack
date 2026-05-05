@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -68,33 +69,59 @@ public class TaskDispatcher {
      */
     public List<Future<String>> dispatch(List<String> tasks) {
         // TODO 3
+        List<Future<String>> futures= new ArrayList<>();
         for (String task : tasks) {
-            pool.submit(() -> {
+            Future<String> f = pool.submit(() -> {
                 String updated = task.toUpperCase();
-                recordResult(task.toUpperCase());
+                recordResult(updated);
+                return updated;
             });
+            futures.add(f);
             //need to make all result into a list of futures somehow and then return theat-use a stream
         }
 
-        return List.of();
+        return futures;
     }
 
     public void recordResult(String result) {
         //TODO 4
+       /* The results list and completedCount must never get out of sync.
+                *   Make sure no other thread can come in between updating one and the other.
+                *   Always release the lock even if something goes wrong.*/
+        lock.lock();
+        try{
+            results.add(result);
+            completedCount++;
+        }
+        finally{
+            lock.unlock();
+        }
     }
 
     public void shutdown() throws InterruptedException {
         //TODO 5
+        try {
+            pool.awaitTermination(10, TimeUnit.SECONDS);
+        } catch(InterruptedException i){
+            i.getMessage();
+        }
     }
 
     public List<String> getResults() {
         //TODO 6
-        return null; //placeholder
+        List<String> updated= new ArrayList<>();
+        lock.lock();
+        try {
+            updated = List.copyOf(results);
+        } finally{
+            lock.unlock();
+        }
+        return updated; //placeholder
     }
 
     public int getCompletedCount() {
         //TODO 6
-        return 0; //placeholder
+        return completedCount; //placeholder
     }
 
 }
