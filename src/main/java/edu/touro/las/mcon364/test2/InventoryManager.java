@@ -101,11 +101,20 @@ public class InventoryManager {
         if(qty<=0){
             throw new IllegalArgumentException();
         }
+
         else{
             int currStock= stock.get(item);
+
+
             if(currStock>=qty){
-                stock.merge(item, -qty, Integer::sum);
-                return true;
+                    lock.lock();
+                try {
+                    totalUnitsAdded -= qty;
+                    stock.merge(item, -qty, Integer::sum);
+                    return true;
+                } finally{
+                    lock.unlock();
+                }
             }
             return false;
         }
@@ -119,7 +128,7 @@ public class InventoryManager {
 
          //placeholder
     }
-//below here is done
+
     /**
      * Returns the current stock for {@code item}, or 0 if unknown.
      */
