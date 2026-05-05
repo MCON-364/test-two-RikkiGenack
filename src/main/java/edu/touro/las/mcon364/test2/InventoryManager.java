@@ -68,7 +68,7 @@ public class InventoryManager {
      */
     public void addStock(String item, int qty) throws IllegalArgumentException{
         // TODO: validate qty > 0
-            if(qty<0){
+            if(qty<=0){
                 throw new IllegalArgumentException();
             }
         // TODO: atomically add qty to the item's current stock
@@ -89,7 +89,10 @@ public class InventoryManager {
      */
     public boolean removeStock(String item, int qty) {
         // TODO: validate qty > 0
-        if (qty>0){
+        if(qty<=0){
+            throw new IllegalArgumentException();
+        }
+        else{
             int currStock= stock.get(item);
             if(currStock>=qty){
                 stock.merge(item, -qty, Integer::sum);
