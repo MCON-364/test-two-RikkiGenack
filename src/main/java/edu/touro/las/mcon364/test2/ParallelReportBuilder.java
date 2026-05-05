@@ -1,11 +1,10 @@
 package edu.touro.las.mcon364.test2;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 /**
  * ══════════════════════════════════════════════════════════════
@@ -84,7 +83,9 @@ public class ParallelReportBuilder {
         }
 
         // TODO 2B: create the concurrency structure needed for the pattern you chose
-
+        ExecutorService pool = Executors.newFixedThreadPool(workers);
+        int chunkSize = (batches.size() + workers - 1) / workers;
+        List<Future<Long>> futures = new ArrayList<>();
 
         // TODO 2C: submit or assign one unit of work per batch
         // Each unit of work should:
