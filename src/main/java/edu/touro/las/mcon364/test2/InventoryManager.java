@@ -1,6 +1,7 @@
 package edu.touro.las.mcon364.test2;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * ══════════════════════════════════════════════════════════════
@@ -55,7 +56,7 @@ public class InventoryManager {
 
     // TODO: declare and initialise a private final field called totalUnitsAdded that tracks the
     //       running total of units ever added, thread-safely, without using synchronized
-
+    private final int totalUnitsAdded = 0;
 
     /**
      * Adds {@code qty} units of {@code item} to inventory.
@@ -64,9 +65,15 @@ public class InventoryManager {
      * @param qty  number of units to add (must be > 0)
      * @throws IllegalArgumentException if qty ≤ 0
      */
-    public void addStock(String item, int qty) {
+    public void addStock(String item, int qty) throws IllegalArgumentException{
         // TODO: validate qty > 0
+            if(qty>0){
+                //
 
+            }
+            else{
+                throw new IllegalArgumentException();
+            }
         // TODO: atomically add qty to the item's current stock
         //       Hint: the thread-safe Map implementation you chose has a merge() method
         //             that can do this in one atomic step
